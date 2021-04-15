@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<!--
+  Hot-Air-Balloon model for FlightGear.
+
+  Copyright (C) 2006 - 2012  Martien van der Plas  
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <sim>
+
+  <description>Hot Air Balloon</description>
+  <author>Martien van der Plas</author>
+  <aircraft-version>$Id: Hot-Air-Balloon-set.xml,v 1.26 2011-05-26 19:03:40 anders Exp $</aircraft-version>
+
+  <status type="string">beta</status>
+  <rating>
+   <FDM type="int">2</FDM>
+   <systems type="int">2</systems>
+   <cockpit type="int">4</cockpit>
+   <model type="int">4</model>
+  </rating>
+
+  <flight-model>jsb</flight-model>
+  <aero>Hot-Air-Balloon</aero>
+
+  <presets>
+   <onground>true</onground>
+  </presets>
+  <startup>
+   <splash-texture>Aircraft/Hot-Air-Balloon/splash.png</splash-texture>
+  </startup>
+
+  <sound>
+   <audible>false</audible>  <path/>
+  </sound>
+
+  <model>
+   <path>Aircraft/Hot-Air-Balloon/Models/Hot-Air-Balloon.xml</path>
+  </model>
+
+  <systems>
+
+   <electrical>
+    <path/>
+   </electrical>
+
+   <static>
+    <name>static</name>
+    <number>0</number>
+    <tau>1</tau>
+   </static>
+
+  </systems>
+  <instrumentation>
+   <path>Aircraft/Hot-Air-Balloon/Systems/instrumentation.xml</path>
+  </instrumentation>
+
+  <view n="0">
+   <internal archive="y">true</internal>
+   <config>
+    <!-- x/y/z == right/up/back -->
+    <x-offset-m type="double" archive="y">0.0</x-offset-m>
+    <y-offset-m type="double" archive="y">-4.60</y-offset-m>
+    <z-offset-m type="double" archive="y">0.70</z-offset-m>
+    <pitch-offset-deg type="double">-5</pitch-offset-deg>
+    <limits>
+     <enabled type="bool">false</enabled>
+    </limits>
+   </config>
+  </view>
+
+  <chase-distance-m type="double" archive="y">-50.0</chase-distance-m>
+
+  <!-- Aircraft specific help. -->
+  <help include="help.xml"/>
+
+  <multiplay>
+   <!-- /fdm/jsbsim/fcs/envelope-lower-radius-norm -->
+   <generic>
+    <float n="0" type="float"> 1.0 </float>
+    <float n="1" type="float"> 1.0 </float>
+    <float n="2" type="float"> 1.0 </float>
+    <float n="3" type="float"> 1.0 </float>
+   </generic>
+  </multiplay>
+
+  <menubar>
+   <default>
+    <menu n="100">
+     <label>Hot Air Balloon</label>
+     <item>
+      <label>About</label>
+      <binding>
+       <command>nasal</command>
+       <script>ZF.about()</script>
+      </binding>
+     </item>
+    </menu>
+   </default>
+  </menubar>
+ </sim>
+
+ <payload>
+  <weight>
+   <name type="string">Pilot</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[1]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">300.0</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Payload</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[2]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">1000.0</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Ballast</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[0]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">2000.0</max-lb>
+  </weight>
+ </payload>
+
+ <nasal>
+  <ZF>
+   <file>Aircraft/Hot-Air-Balloon/Systems/ZF.nas</file>
+  </ZF>
+  <!-- Instruments>
+   <file>Aircraft/Hot-Air-Balloon/Systems/electrical.nas</file>
+  </Instruments -->
+ </nasal>
+
+ <input>
+  <keyboard>
+   <!-- Keyboard commands -->
+   <key n="68">
+    <name>D</name>
+    <desc>Drop 1% ballast</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Dropping ballast!");
+       setprop(ZF.ballast, 0.99 * getprop(ZF.ballast));
+     </script>
+    </binding>
+   </key>
+   <key n="77">
+    <name>M</name>
+    <desc>Gain ballast</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Gaining ballast! (Cheater! ;)");
+       setprop(ZF.ballast, 1.01 * getprop(ZF.ballast));
+     </script>
+    </binding>
+   </key>
+   <key n="100">
+    <name>d</name>
+    <desc>Drop 0.1% ballast</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Dropping ballast!");
+       setprop(ZF.ballast, 0.999 * getprop(ZF.ballast));
+     </script>
+    </binding>
+   </key>
+   <key n="70">
+    <name>F</name>
+    <desc>Open gas valve.</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Gas valve open!");
+       setprop(ZF.gas_valve, 1.00);
+     </script>
+    </binding>
+   </key>
+   <key n="102">
+    <name>f</name>
+    <desc>Close gas valve.</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Gas valve closed!");
+       setprop(ZF.gas_valve, 0.00);
+     </script>
+    </binding>
+   </key>
+   <key n="82">
+    <name>R</name>
+    <desc>Rip envelope</desc>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Enveloped ripped!");
+       ZF.ripped = 1;
+       setprop(ZF.rip_panel, 50.00);
+     </script>
+    </binding>
+   </key>
+
+   <key n="87"> 
+    <name>W</name>
+    <desc>Perform on-ground weigh-off.</desc>
+    <binding> 
+     <command>nasal</command>
+     <script>
+      ZF.weighoff();
+     </script>     
+    </binding>
+   </key>
+
+   <key n="119"> 
+    <name>w</name>
+    <desc>Show current on-ground weight.</desc>
+    <binding> 
+     <command>nasal</command>
+     <script>
+      ZF.print_wow();
+     </script>     
+    </binding>
+   </key>
+
+  </keyboard>
+ </input>
+
+</PropertyList>
